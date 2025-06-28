@@ -52,11 +52,22 @@ buildDataQualityHistoryIndex <-
         filter(.data$failed==1) %>%
         group_by(.data$category, toupper(.data$cdm_table_name)) %>%
         summarise(count_value=n())
-      names(stratifiedAggregates) <- c("category", "cdm_table_name", "count_value")
-      stratifiedAggregates$dqd_execution_date <- dqd_execution_date
-      stratifiedAggregates$cdm_release_date <- cdm_release_date
 
-      stratified_index <<- dplyr::bind_rows(stratified_index, stratifiedAggregates)
+      # ✅ 에러 방지를 위한 조건 추가
+      if (nrow(stratifiedAggregates) > 0) {
+        names(stratifiedAggregates) <- c("category", "cdm_table_name", "count_value")
+        stratifiedAggregates$dqd_execution_date <- dqd_execution_date
+        stratifiedAggregates$cdm_release_date <- cdm_release_date
+
+        stratified_index <<- dplyr::bind_rows(stratified_index, stratifiedAggregates)
+      } else {
+        writeLines("No failed results found for stratified index")
+      }
+
+
+
+
+
 
       total_index <<- dplyr::bind_rows(total_index,
           list(
