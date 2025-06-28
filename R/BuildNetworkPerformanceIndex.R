@@ -70,8 +70,8 @@ buildNetworkPerformanceIndex <-
 
               performanceTable <- merge(x=performanceTable,y=analysisDetails,by="TASK",all.x=TRUE)
 
-              dqdTable <- dplyr::select(dqdData, c("CheckResults.checkId", "CheckResults.executionTime", "CheckResults.category")) %>%
-                rename(dplyr::all_of(c(TASK = "CheckResults.checkId", TIMING = "CheckResults.executionTime", CATEGORY = "CheckResults.category"))) %>% mutate(PACKAGE = "DQD") %>%
+              dqdTable <- dplyr::select(dqdData, c("CheckResults.checkId", "CheckResults.EXECUTION_TIME", "CheckResults.CATEGORY")) %>%
+                rename(dplyr::all_of(c(TASK = "CheckResults.checkId", TIMING = "CheckResults.EXECUTION_TIME", CATEGORY = "CheckResults.CATEGORY"))) %>% mutate(PACKAGE = "DQD") %>%
                 mutate_at("TIMING", str_replace, " secs", "")
 
               names(performanceTable) <- toupper(names(performanceTable))
