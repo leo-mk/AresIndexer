@@ -75,7 +75,7 @@ buildDataQualityIndex <- function(sourceFolders, outputFolder) {
        
 
             # for each release, generate a summary of failures by cdm_table_name
-            domainAggregates <- results %>% filter(.data$failed==1) %>% count(tolower(.data$cdmTableName))
+            domainAggregates <- results %>% filter(.data$failed==1) %>% count(tolower(.data$cdm_table_name))
             names(domainAggregates) <- c("cdm_table_name", "count_failed")
             data.table::fwrite(domainAggregates, file.path(releaseFolder,"domain-issues.csv"))
 
@@ -87,11 +87,11 @@ buildDataQualityIndex <- function(sourceFolders, outputFolder) {
               results[,colName] <- NA
             }
             sourceFailures <- results[results[,"failed"]==1,outColNames]
-            sourceFailures$CDM_SOURCE_NAME <- dataQualityResults$Metadata$cdmSourceName
-            sourceFailures$CDM_SOURCE_ABBREVIATION <- dataQualityResults$Metadata$cdmSourceAbbreviation
-            sourceFailures$CDM_SOURCE_KEY <- gsub(" ","_",dataQualityResults$Metadata$cdmSourceAbbreviation)
-            sourceFailures$RELEASE_NAME <- format(lubridate::ymd(dataQualityResults$Metadata$cdmReleaseDate),"%Y-%m-%d")
-            sourceFailures$RELEASE_ID <- format(lubridate::ymd(dataQualityResults$Metadata$cdmReleaseDate),"%Y%m%d")
+            sourceFailures$CDM_SOURCE_NAME <- dataQualityResults$Metadata$CDM_SOURCE_NAME
+            sourceFailures$CDM_SOURCE_ABBREVIATION <- dataQualityResults$Metadata$CDM_SOURCE_ABBREVIATION
+            sourceFailures$CDM_SOURCE_KEY <- gsub(" ","_",dataQualityResults$Metadata$CDM_SOURCE_ABBREVIATION)
+            sourceFailures$RELEASE_NAME <- format(lubridate::ymd(dataQualityResults$Metadata$CDM_RELEASE_DATE),"%Y-%m-%d")
+            sourceFailures$RELEASE_ID <- format(lubridate::ymd(dataQualityResults$Metadata$CDM_RELEASE_DATE),"%Y%m%d")
             networkIndex <- rbind(networkIndex, sourceFailures)
           } else {
             writeLines(paste("missing data quality result file ",dataQualityResultsFile))
