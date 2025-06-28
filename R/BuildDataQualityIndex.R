@@ -69,6 +69,7 @@ buildDataQualityIndex <- function(sourceFolders, outputFolder) {
           if (file.exists(dataQualityResultsFile)) {
             dataQualityResults <- jsonlite::fromJSON(dataQualityResultsFile)
             results <- dataQualityResults$CheckResults
+            names(results) <- tolower(names(results))
 
             # for each release, generate a summary of failures by cdm_table_name
             domainAggregates <- results %>% filter(.data$failed==1) %>% count(tolower(.data$cdmTableName))
@@ -76,7 +77,7 @@ buildDataQualityIndex <- function(sourceFolders, outputFolder) {
             data.table::fwrite(domainAggregates, file.path(releaseFolder,"domain-issues.csv"))
 
             # collect all failures from this result file for network analysis
-            outColNames <- c("checkName", "checkLevel", "cdmTableName", "category", "subcategory", "context", "cdmFieldName", "conceptId", "unitConceptId")
+            outColNames <- c("check_name", "check_level", "cdm_table_name", "category", "subcategory", "context", "cdm_field_name", "concept_id", "unit_concept_id")
             missingColNames <- setdiff(outColNames, names(results))
             for (colName in missingColNames) {
               writeLines(paste0("Expected column is missing in DQD results. Adding column with NA values: ", colName))
