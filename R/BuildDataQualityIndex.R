@@ -70,7 +70,10 @@ buildDataQualityIndex <- function(sourceFolders, outputFolder) {
             dataQualityResults <- jsonlite::fromJSON(dataQualityResultsFile)
             results <- dataQualityResults$CheckResults
             names(results) <- tolower(names(results))
+            print("print(names(results))")
             print(names(results))
+       
+
             # for each release, generate a summary of failures by cdm_table_name
             domainAggregates <- results %>% filter(.data$failed==1) %>% count(tolower(.data$cdmTableName))
             names(domainAggregates) <- c("cdm_table_name", "count_failed")
