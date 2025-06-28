@@ -41,10 +41,16 @@ buildDataQualityHistoryIndex <-
       count_failed <- as.numeric(json$Overview$countOverallFailed)
       count_total <- count_passed + count_failed
       dqd_execution_date <- format(lubridate::ymd_hms(json$endTimestamp),"%Y-%m-%d")
+      print("addResultsToIndex")
 
-      stratifiedAggregates <- json$CheckResults %>%
+      results <- json$CheckResults
+      names(results) <- tolower(names(results))
+      print("print(names(results))")
+      print(names(results))
+
+      stratifiedAggregates <- results %>%
         filter(.data$failed==1) %>%
-        group_by(.data$category, toupper(.data$cdmTableName)) %>%
+        group_by(.data$category, toupper(.data$cdm_table_name)) %>%
         summarise(count_value=n())
       names(stratifiedAggregates) <- c("category", "cdm_table_name", "count_value")
       stratifiedAggregates$dqd_execution_date <- dqd_execution_date
