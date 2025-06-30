@@ -62,9 +62,9 @@ augmentConceptFiles <- function(
     dataQualityResults <- jsonlite::fromJSON(dataQualityResultsFile)
     results <- dataQualityResults$CheckResults
 
-    names(results) <- tolower(names(results))
-    print("print(names(results))")
-    print(names(results))
+    # names(results) <- tolower(names(results))
+    # print("print(names(results))")
+    # print(names(results))
 
     # augment achilles concept files with data quality failure count for relevant concept checks
     conceptAggregates <- results %>%
