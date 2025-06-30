@@ -92,7 +92,7 @@ augmentDataQualityFiles <- function(sourceFolders) {
 
 
         currentChecks <- currentChecks %>%
-          mutate(delta = ifelse(.data$failed == 1, "NEW", "STABLE"))
+          mutate(delta = ifelse(.data$FAILED == 1, "NEW", "STABLE"))
 
         currentQualityFile$CheckResults <- currentChecks
       }
