@@ -58,8 +58,20 @@ augmentDataQualityFiles <- function(sourceFolders) {
         currentChecks <- currentChecks[, commonCols, drop = FALSE]
         previousData <- previousData[, commonCols, drop = FALSE]
 
+        print("print(names(currentChecks))")
+        print(names(currentChecks))
+
+        print("print(names(previousData))")
+        print(names(previousData))
+
+
         mergedData <- currentChecks %>%
           left_join(previousData, by = "checkId", suffix = c("", "_previous"))
+
+
+        print("print(names(mergedData))")
+        print(names(mergedData))
+
 
         mergedData <- mergedData %>%
           mutate(delta = case_when(
