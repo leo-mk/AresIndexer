@@ -33,6 +33,9 @@ buildDataQualityHistoryIndex <-
     stratified_index <- data.table::data.table()
 
     addResultsToIndex <- function(json) {
+      print('print json') 
+      print(names(json))
+
       cdm_source_name <- json$Metadata[1,"cdmSourceName"]
       cdm_source_abbreviation <- json$Metadata[1,"cdmSourceAbbreviation"]
       vocabulary_version <- json$Metadata[1,"vocabularyVersion"]
@@ -41,16 +44,33 @@ buildDataQualityHistoryIndex <-
       count_failed <- as.numeric(json$Overview$countOverallFailed)
       count_total <- count_passed + count_failed
       dqd_execution_date <- format(lubridate::ymd_hms(json$endTimestamp),"%Y-%m-%d")
+      # print("addResultsToIndex")
+
+      # results <- json$CheckResults
+      # names(results) <- tolower(names(results))
+      # print("print(names(results))")
+      # print(names(results))
 
       stratifiedAggregates <- json$CheckResults %>%
         filter(.data$failed==1) %>%
         group_by(.data$category, toupper(.data$cdmTableName)) %>%
         summarise(count_value=n())
-      names(stratifiedAggregates) <- c("category", "cdm_table_name", "count_value")
-      stratifiedAggregates$dqd_execution_date <- dqd_execution_date
-      stratifiedAggregates$cdm_release_date <- cdm_release_date
 
-      stratified_index <<- dplyr::bind_rows(stratified_index, stratifiedAggregates)
+      # ✅ 에러 방지를 위한 조건 추가
+      if (nrow(stratifiedAggregates) > 0) {
+        names(stratifiedAggregates) <- c("category", "cdm_table_name", "count_value")
+        stratifiedAggregates$dqd_execution_date <- dqd_execution_date
+        stratifiedAggregates$cdm_release_date <- cdm_release_date
+
+        stratified_index <<- dplyr::bind_rows(stratified_index, stratifiedAggregates)
+      } else {
+        writeLines("No failed results found for stratified index")
+      }
+
+
+
+
+
 
       total_index <<- dplyr::bind_rows(total_index,
           list(

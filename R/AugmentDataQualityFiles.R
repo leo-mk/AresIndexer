@@ -58,8 +58,20 @@ augmentDataQualityFiles <- function(sourceFolders) {
         currentChecks <- currentChecks[, commonCols, drop = FALSE]
         previousData <- previousData[, commonCols, drop = FALSE]
 
+        writeLines("print(names(currentChecks))")
+        print(names(currentChecks))
+
+        writeLines("print(names(previousData))")
+        print(names(previousData))
+
+
         mergedData <- currentChecks %>%
           left_join(previousData, by = "checkId", suffix = c("", "_previous"))
+
+
+        writeLines("print(names(mergedData))")
+        print(names(mergedData))
+
 
         mergedData <- mergedData %>%
           mutate(delta = case_when(
@@ -74,6 +86,11 @@ augmentDataQualityFiles <- function(sourceFolders) {
 
         currentQualityFile$CheckResults <- mergedData
       } else {
+
+        writeLines("print(names(currentChecks))")
+        print(names(currentChecks))
+
+
         currentChecks <- currentChecks %>%
           mutate(delta = ifelse(.data$failed == 1, "NEW", "STABLE"))
 
