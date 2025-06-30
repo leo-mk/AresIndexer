@@ -62,10 +62,14 @@ augmentConceptFiles <- function(
     dataQualityResults <- jsonlite::fromJSON(dataQualityResultsFile)
     results <- dataQualityResults$CheckResults
 
+    names(results) <- tolower(names(results))
+    print("print(names(results))")
+    print(names(results))
+
     # augment achilles concept files with data quality failure count for relevant concept checks
     conceptAggregates <- results %>%
-      filter(!is.na(results$conceptId) & results$failed == 1) %>%
-      count(.data$conceptId, tolower(.data$cdmTableName))
+      filter(!is.na(results$concept_id) & results$failed == 1) %>%
+      count(.data$concept_id, tolower(.data$cdm_table_name))
     names(conceptAggregates) <- c("concept_id", "cdm_table_name", "count_failed")
     writeLines(paste0(nrow(conceptAggregates), " concept level data quality issues found."))
     if (format == "duckdb") {
