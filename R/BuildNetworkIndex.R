@@ -92,6 +92,9 @@ buildNetworkIndex <- function(sourceFolders, outputFolder) {
 
   			# add data quality details
   			if (file.exists(dataQualityResultsFile)) {
+
+	        writeLines("add data quality details")
+
   				dataQualityResults <- jsonlite::fromJSON(dataQualityResultsFile)
 
   				# add person results
@@ -133,6 +136,12 @@ buildNetworkIndex <- function(sourceFolders, outputFolder) {
               obs_period_end = format(lubridate::ym(obs_period_end),"%Y-%m")
             )
           )
+
+          print("print(source")
+          print(source)
+
+
+
   			} else {
   				writeLines(paste("missing data quality result file ",dataQualityResultsFile))
   			}
